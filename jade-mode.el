@@ -42,13 +42,16 @@
   (if (jade-empty-line-p)
       (indent-to (jade-previous-indentation))
     ;; otherwise indent if nesting is correct
-    (if (jade-should-indent-p)
+    (save-excursion
+      (if (jade-should-indent-p)
+          (let ((ci (current-indentation)))
+            (beginning-of-line)
+            (delete-horizontal-space)
+            (indent-to (+ jade-tab-width ci)))
+        ;; if cannot indent, reset indentation
         (progn
-          (save-excursion
-            (let ((ci (current-indentation)))
-              (beginning-of-line)
-              (delete-horizontal-space)
-              (indent-to (+ jade-tab-width ci)))))))
+          (beginning-of-line)
+          (delete-horizontal-space)))))
   ;; move point to end of line on empty lines to make tabbing
   ;; more obvious
   (if (jade-blank-line-p)

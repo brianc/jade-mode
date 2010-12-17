@@ -7,6 +7,10 @@
   "Prints a debug message"
   (apply 'message (append (list string) args)))
 
+(defmacro jade-line-as-string ()
+  "Returns the current line as a string."
+  `(buffer-substring (point-at-bol) (point-at-eol)))
+
 
 (defun jade-indent-line ()
   "Indents current line")
@@ -22,15 +26,29 @@
   ;; should only indent if previous line is indented at most one less
   (> (jade-previous-indentation) (- (current-indentation) 1)))
 
+(defun jade-empty-line-p ()
+  "If line is empty or not."
+  (= (point-at-eol) (point-at-bol)))
+
 (defun jade-indent-line ()
   "Indents the line."
   (interactive)
-  (if (jade-should-indent-p)
-      (save-excursion
-        (let ((ci (current-indentation)))
-          (beginning-of-line)
-          (delete-horizontal-space)
-          (indent-to (+ jade-tab-width ci))))))
+
+  ;; indent straight to end on empty line
+  (if (jade-empty-line-p)
+      (indent-to (jade-previous-indentation))
+    (if (jade-should-indent-p)
+        (progn
+          (save-excursion
+            (let ((ci (current-indentation)))
+              (beginning-of-line)
+              (delete-horizontal-space)
+              (indent-to (+ jade-tab-width ci))))
+          )))
+  ;; move point to end of line on empty lines to make tabbing
+  ;; more obvious
+  (if (string-match-p "^[ ]*$" (jade-line-as-string))
+      (move-end-of-line 1)))
 
 (setq jade-font-lock-keywords
       `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-constant-face) ;; doctype

@@ -30,6 +30,10 @@
   "If line is empty or not."
   (= (point-at-eol) (point-at-bol)))
 
+(defun jade-blank-line-p ()
+  "If line contains only spaces."
+  (string-match-p "^[ ]*$" (jade-line-as-string)))
+
 (defun jade-indent-line ()
   "Indents the line."
   (interactive)
@@ -37,18 +41,34 @@
   ;; indent straight to end on empty line
   (if (jade-empty-line-p)
       (indent-to (jade-previous-indentation))
+    ;; otherwise indent if nesting is correct
     (if (jade-should-indent-p)
         (progn
           (save-excursion
             (let ((ci (current-indentation)))
               (beginning-of-line)
               (delete-horizontal-space)
-              (indent-to (+ jade-tab-width ci))))
-          )))
+              (indent-to (+ jade-tab-width ci)))))))
   ;; move point to end of line on empty lines to make tabbing
   ;; more obvious
-  (if (string-match-p "^[ ]*$" (jade-line-as-string))
+  (if (jade-blank-line-p)
       (move-end-of-line 1)))
+
+(defun jade-max-indent ()
+  "Max indents previous line."
+  (indent-to (+ jade-tab-width (jade-previous-indentation))))
+
+(defun jade-unindent-line ()
+  "Unindents the current line"
+  (interactive)
+  (let ((ci (current-indentation)))
+    (if (= ci 0)
+        ;; no indentation, set to max
+        (jade-max-indent)
+      (progn
+        (beginning-of-line)
+        (delete-horizontal-space)
+        (indent-to (- ci jade-tab-width))))))
 
 (setq jade-font-lock-keywords
       `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-constant-face) ;; doctype

@@ -80,6 +80,22 @@
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-function-name-face) ;; class name
         (,"^[ {2,}]+[a-z0-9_:\\-]*" 0 font-lock-comment-face)))
 
+(defun jade-next-line-indent ()
+  "Gets indentation level for next line."
+  (save-excursion
+    (next-line)
+    (current-indentation)))
+
+(defun jade-region-for-sexp ()
+  "Selects the current sexp as the region"
+  (interactive)
+  (beginning-of-line)
+  (let ((ci (current-indentation)))
+    (push-mark nil nil t)
+    (while (> (jade-next-line-indent) ci)
+      (next-line)
+      (end-of-line))))
+
 (defvar jade-mode-map (make-sparse-keymap))
 (define-key jade-mode-map [S-tab] 'jade-unindent-line)
 

@@ -11,10 +11,26 @@
 (defun jade-indent-line ()
   "Indents current line")
 
+(defun jade-previous-indentation ()
+  "Gets indentation for previous line"
+  (save-excursion
+    (previous-line)
+    (current-indentation)))
+
+(defun jade-should-indent-p ()
+  "Whether or not line should be indented."
+  ;; should only indent if previous line is indented at most one less
+  (> (jade-previous-indentation) (- (current-indentation) 1)))
+
 (defun jade-indent-line ()
   "Indents the line."
   (interactive)
-  (jade-debug "TODO: implement this"))
+  (if (jade-should-indent-p)
+      (save-excursion
+        (let ((ci (current-indentation)))
+          (beginning-of-line)
+          (delete-horizontal-space)
+          (indent-to (+ jade-tab-width ci))))))
 
 (setq jade-font-lock-keywords
       `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-constant-face) ;; doctype

@@ -80,6 +80,9 @@
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-function-name-face) ;; class name
         (,"^[ {2,}]+[a-z0-9_:\\-]*" 0 font-lock-comment-face)))
 
+(defvar jade-mode-map (make-sparse-keymap))
+(define-key jade-mode-map [S-tab] 'jade-unindent-line)
+
 ;; mode declaration
 (define-derived-mode jade-mode fundamental-mode
   "Jade"
@@ -89,6 +92,9 @@
 
   (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
+
+  ;; keymap
+  (use-local-map jade-mode-map)
 
   ;; highlight syntax
   (setq font-lock-defaults '(jade-font-lock-keywords))

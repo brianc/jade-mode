@@ -1,7 +1,6 @@
 ;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
 (require 'font-lock)
 
-(defvar jade-function-regexp "[A-Za-z]")
 (defvar jade-tab-width 2)
 
 (defun jade-debug (string &rest args)
@@ -10,52 +9,33 @@
 
 
 (defun jade-indent-line ()
-  "Indents current line"
+  "Indents current line")
+
+(defun jade-indent-line ()
+  "Indents the line."
   (interactive)
-  (if (= (point) (point-at-bol))
-      (insert-tab)
-    (save-excursion
-      (let ((prev-indent 0) (cur-indent 0))
-        ;; Figure out the indentation of the previous line
-        (setq prev-indent)
-
-        ;; Figure out the current line's indentation
-        (setq cur-indent (current-indentation))
-
-        ;; Shift one column to the left
-        (beginning-of-line)
-        (insert-tab)
-
-        (when (= (point-at-bol) (point))
-          (forward-char 2))
-
-
-        ;; We're too far, remove all indentation.
-        ;;         (when (> (- (current-indentation) prev-indent) coffee-tab-width)
-        ;;           (backward-to-indentation 0)
-        ;;           (delete-region (point-at-bol) (point)))
-        ))))
+  (jade-debug "TODO: implement this"))
 
 (setq jade-font-lock-keywords
-      `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" . font-lock-constant-face)
-        (,"#\\(\\w\\|_\\|-\\)*" . font-lock-type-face)
-        (,"\\.[A-Za-z0-9\-\_]*" . font-lock-function-name-face)
-        (,"^ *\\<\\([A-Za-z0-9]*\\)\\>" . font-lock-keyword-face)))
-
+      `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-constant-face) ;; doctype
+        (,"#\\(\\w\\|_\\|-\\)*" . font-lock-type-face) ;; id
+        (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-type-face) ;; class name
+        (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-function-name-face) ;; class name
+        (,"^[ {2,}]+[a-z0-9_:\\-]*" 0 font-lock-comment-face)))
 
 ;; mode declaration
 (define-derived-mode jade-mode fundamental-mode
   "Jade"
   "Major mode for editing jade node.js templates"
-  ;; ...
   (kill-all-local-variables)
   (setq tab-width 2)
-  ;; code for syntax highlighting
+
+  (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
 
-
+  ;; highlight syntax
   (setq font-lock-defaults '(jade-font-lock-keywords))
-  (setq mode-name "Jade")
+
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'jade-indent-line)
   ;; no tabs

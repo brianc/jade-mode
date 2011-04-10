@@ -107,6 +107,7 @@
 
 (defvar sws-mode-map (make-sparse-keymap))
 (define-key sws-mode-map [S-tab] 'sws-dendent-line)
+(define-key sws-mode-map [backtab] 'sws-dendent-line)
 
 (define-derived-mode sws-mode fundamental-mode
   "sws"

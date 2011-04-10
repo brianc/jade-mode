@@ -49,6 +49,7 @@
 
 (defun sws-at-bol-p ()
   "If point is at beginning of line"
+  (interactive)
   (= (point) (point-at-bol)))
 
 (defun sws-at-bot-p ()
@@ -98,6 +99,7 @@
       (sws-move-region (region-beginning) (region-end) '-)
     (if (sws-at-bol-p)
         (progn
+          (message "at mother fucking bol")
           (delete-horizontal-space)
           (indent-to (sws-max-indent)))
       (let ((ci (current-indentation)))
@@ -127,7 +129,7 @@
 
   ;; keymap
   (use-local-map sws-mode-map)
-
+  (whitespace-mode)
   (setq major-mode 'sws-mode))
 
 (provide 'sws-mode)

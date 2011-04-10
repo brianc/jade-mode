@@ -22,10 +22,7 @@
 
 (defun sws-point-to-bot ()
   "Moves point to beginning of text"
-  (let ((ci (current-indentation)))
-    (beginning-of-line)
-    (delete-horizontal-space)
-    (indent-to ci)))
+  (beginning-of-line-text))
 
 (defun sws-do-indent-line ()
   "Performs line indentation"
@@ -77,7 +74,7 @@
     (let (first-indent indent-diff)
       (goto-char begin)
       (setq first-indent (current-indentation))
-      (sws-indent-to     
+      (sws-indent-to
        (funcall prog first-indent sws-tab-width))
       (setq indent-diff (- (current-indentation) first-indent))
       ;; move other lines based on movement of first line

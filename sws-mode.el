@@ -27,12 +27,14 @@
 (defun sws-do-indent-line ()
   "Performs line indentation"
   ;;if we are not tabbed out past max indent
-  (if (< (current-indentation) (sws-max-indent))
-      (indent-to (+ (current-indentation) sws-tab-width))
-    ;; if at max indent move text to beginning of line
-    (progn
-      (beginning-of-line)
-      (delete-horizontal-space))))
+  (if (sws-empty-line-p)
+      (indent-to (sws-max-indent))
+    (if (< (current-indentation) (sws-max-indent))
+        (indent-to (+ (current-indentation) sws-tab-width))
+      ;; if at max indent move text to beginning of line
+      (progn
+        (beginning-of-line)
+        (delete-horizontal-space)))))
 
 (defun sws-indent-line ()
   "Indents current line"

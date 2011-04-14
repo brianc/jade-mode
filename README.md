@@ -36,7 +36,12 @@ Lines can be indented or un-indented (is that a word?) with tab, shift-tab respe
 
 Regions can be indentend in a similar way; however, this is still buggy...
 
-Since jade and stylus nesting is somewhat related to sexp layout I hope to have sexp related selection & manipulation working in the future.  Currently working on `jade-highlight-sexp`
+Since jade and stylus nesting is somewhat related to sexp layout I hope to have sexp related selection & manipulation working in the future.  See `jade-highlight-sexp` for an example
+
+## key bindings
+
+  - [tab] if region is active, do 'smart indent' on region.  otherwise, move cursor to beginning of line text.  If cursor already at beginning of line text, do 'smart indent' on line.
+  - [shift-tab] if region is active, do 'smart dedent' on region.  otherwise, move cursor to beginning of line text.  If cursor already at beginning of line text, do 'smart dedent' on line.
 
 
 ### jade-mode

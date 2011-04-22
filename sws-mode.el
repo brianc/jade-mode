@@ -39,7 +39,7 @@
 (defun sws-indent-line ()
   "Indents current line"
   (interactive)
-  (if (region-active-p)
+  (if mark-active
       (sws-indent-region)
     (if (sws-at-bot-p)
         (sws-do-indent-line)
@@ -94,7 +94,7 @@
 (defun sws-dendent-line ()
   "De-indents current line"
   (interactive)
-  (if (region-active-p)
+  (if mark-active
       (sws-move-region (region-beginning) (region-end) '-)
     (if (sws-at-bol-p)
         (progn
@@ -128,7 +128,6 @@
 
   ;; keymap
   (use-local-map sws-mode-map)
-  (whitespace-mode)
   (setq major-mode 'sws-mode))
 
 (provide 'sws-mode)

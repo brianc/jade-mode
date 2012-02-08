@@ -57,6 +57,7 @@
 
   (setq indent-region-function 'sws-indent-region)
 
+  (setq indent-tabs-mode nil)
 
   ;; keymap
   (use-local-map jade-mode-map)

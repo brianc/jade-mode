@@ -1,3 +1,7 @@
+;;; sws-mode.el --- (S)ignificant (W)hite(S)pace mode
+;;; URL: https://github.com/brianc/jade-mode
+;;; Author: Brian M. Carlson and other contributors
+;;; sws-mode.el ends here
 (require 'font-lock)
 
 (defvar sws-tab-width 2)

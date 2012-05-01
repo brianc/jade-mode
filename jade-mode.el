@@ -1,4 +1,8 @@
-;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
+;;; jade-mode.el --- emacs major mode for editing .jade files
+;;; URL: https://github.com/brianc/jade-mode
+;;; Author: Brian M. Carlson and other contributors
+;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
+;;; jade-mode.el ends here
 (require 'font-lock)
 
 (defun jade-debug (string &rest args)

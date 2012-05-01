@@ -1,7 +1,8 @@
 ;;; sws-mode.el --- (S)ignificant (W)hite(S)pace mode
+;;;
 ;;; URL: https://github.com/brianc/jade-mode
 ;;; Author: Brian M. Carlson and other contributors
-;;; sws-mode.el ends here
+;;;
 (require 'font-lock)
 
 (defvar sws-tab-width 2)
@@ -114,6 +115,7 @@
 (define-key sws-mode-map [S-tab] 'sws-dendent-line)
 (define-key sws-mode-map [backtab] 'sws-dendent-line)
 
+;;;###autoload
 (define-derived-mode sws-mode fundamental-mode
   "sws"
   "Major mode for editing significant whitespace files"
@@ -135,3 +137,4 @@
   (setq major-mode 'sws-mode))
 
 (provide 'sws-mode)
+;;; sws-mode.el ends here

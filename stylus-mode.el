@@ -1,9 +1,12 @@
-;;; stylus-mode.el --- emacs major mode for editing .jade files
+;;; stylus-mode.el --- Major mode for editing .jade files
+;;;
 ;;; URL: https://github.com/brianc/jade-mode
 ;;; Author: Brian M. Carlson and other contributors
+;;; Package-Requires: ((sws-mode "0"))
+;;;
 ;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
-;;; stylus-mode.el ends here
 (require 'font-lock)
+(require 'sws-mode)
 
 (defun stylus-debug (string &rest args)
   "Prints a debug message"
@@ -65,6 +68,7 @@
 ;;(define-key stylus-mode-map [S-tab] 'stylus-unindent-line)
 
 ;; mode declaration
+;;;###autoload
 (define-derived-mode stylus-mode sws-mode
   "Stylus"
   "Major mode for editing stylus node.js templates"
@@ -89,6 +93,8 @@
   ;; highlight syntax
   (setq font-lock-defaults '(stylus-font-lock-keywords)))
 
-(provide 'stylus-mode)
-
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.styl$" . stylus-mode))
+
+(provide 'stylus-mode)
+;;; stylus-mode.el ends here

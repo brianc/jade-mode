@@ -1,9 +1,12 @@
-;;; jade-mode.el --- emacs major mode for editing .jade files
+;;; jade-mode.el --- Major mode for editing .jade files
+;;;
 ;;; URL: https://github.com/brianc/jade-mode
 ;;; Author: Brian M. Carlson and other contributors
+;;; Package-Requires: ((sws-mode "0"))
+;;;
 ;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
-;;; jade-mode.el ends here
 (require 'font-lock)
+(require 'sws-mode)
 
 (defun jade-debug (string &rest args)
   "Prints a debug message"
@@ -44,6 +47,7 @@
 ;;(define-key jade-mode-map [S-tab] 'jade-unindent-line)
 
 ;; mode declaration
+;;;###autoload
 (define-derived-mode jade-mode sws-mode
   "Jade"
   "Major mode for editing jade node.js templates"
@@ -68,6 +72,9 @@
   ;; highlight syntax
   (setq font-lock-defaults '(jade-font-lock-keywords)))
 
-(provide 'jade-mode)
 
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.jade$" . jade-mode))
+
+(provide 'jade-mode)
+;;; jade-mode.el ends here

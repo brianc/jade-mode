@@ -26,7 +26,7 @@
   (string-match-p "^[ ]*$" (jade-line-as-string)))
 
 (setq jade-font-lock-keywords
-      `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-constant-face) ;; doctype
+      `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-comment-face) ;; doctype
         (,"#\\(\\w\\|_\\|-\\)*" . font-lock-type-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-type-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-function-name-face) ;; class name

@@ -29,7 +29,7 @@
       `((,"!!!\\( \\(default\\|5\\|transitional\\)\\)?" 0 font-lock-comment-face) ;; doctype
         (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
-        (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-function-name-face) ;; class name
+        (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
         (,"^[ {2,}]+[a-z0-9_:\\-]*" 0 font-lock-comment-face))) ;; tag name
 
 (defun jade-region-for-sexp ()

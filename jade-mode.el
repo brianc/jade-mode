@@ -25,6 +25,17 @@
   "If line contains only spaces."
   (string-match-p "^[ ]*$" (jade-line-as-string)))
 
+;; command to comment/uncomment text
+(defun jade-comment-dwim (arg)
+  "Comment or uncomment current line or region in a smart way.
+For detail, see `comment-dwim'."
+  (interactive "*P")
+  (require 'newcomment)
+  (let (
+        (comment-start "//") (comment-end "")
+        )
+    (comment-dwim arg)))
+
 (setq jade-font-lock-keywords
       `((,"!!!\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
         (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
@@ -70,6 +81,9 @@
 
   ;; keymap
   (use-local-map jade-mode-map)
+
+  ;; modify the keymap
+  (define-key jade-mode-map [remap comment-dwim] 'jade-comment-dwim)
 
   ;; highlight syntax
   (setq font-lock-defaults '(jade-font-lock-keywords)))

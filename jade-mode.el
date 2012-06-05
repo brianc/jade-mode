@@ -51,20 +51,10 @@
 (define-derived-mode jade-mode sws-mode
   "Jade"
   "Major mode for editing jade node.js templates"
-  (kill-all-local-variables)
   (setq tab-width 2)
 
   (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
-
-  ;; default tab width
-  (setq sws-tab-width 2)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'sws-indent-line)
-  (make-local-variable 'indent-region-function)
-
-  (setq indent-region-function 'sws-indent-region)
-
 
   ;; keymap
   (use-local-map jade-mode-map)

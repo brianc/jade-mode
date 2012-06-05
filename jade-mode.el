@@ -32,6 +32,16 @@
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
         (,"^[ {2,}]+[a-z0-9_:\\-]*" 0 font-lock-function-name-face))) ;; tag name
 
+;; syntax table
+(defvar jade-syntax-table nil "Syntax table for `jade-mode'.")
+(setq jade-syntax-table
+      (let ((syn-table (make-syntax-table)))
+
+        (modify-syntax-entry ?\/ ". 12b" syn-table)
+        (modify-syntax-entry ?\n "> b" syn-table)
+
+        syn-table))
+
 (defun jade-region-for-sexp ()
   "Selects the current sexp as the region"
   (interactive)
@@ -51,6 +61,8 @@
 (define-derived-mode jade-mode sws-mode
   "Jade"
   "Major mode for editing jade node.js templates"
+  :syntax-table jade-syntax-table
+
   (setq tab-width 2)
 
   (setq mode-name "Jade")

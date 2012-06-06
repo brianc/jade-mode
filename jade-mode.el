@@ -36,8 +36,16 @@ For detail, see `comment-dwim'."
         )
     (comment-dwim arg)))
 
+(defconst jade-keywords
+  (eval-when-compile
+    (regexp-opt
+     '("if" "else" "for" "in" "each" "case" "when" "default" "block" "extends"
+       "include" "yield" "mixin") 'words))
+  "Jade keywords.")
+
 (setq jade-font-lock-keywords
       `((,"!!!\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
+        (,jade-keywords . font-lock-keyword-face) ;; keywords
         (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name

@@ -47,7 +47,7 @@
      0 font-lock-constant-face)
     (,(concat "[^_$]?\\<\\(" stylus-keywords "\\)\\>[^_]?")
      0 font-lock-keyword-face)
-    (,"\\([0-9]+:?\\(em\\|ex\\|px\\|mm\\|cm\\|in\\|pt\\|pc\\|deg\\|rad\\|grad\\|ms\\|s\\|Hz\\|kHz\\|rem\\|%\\)\\)" 0 font-lock-constant-face)
+    (,"\\([.0-9]+:?\\(em\\|ex\\|px\\|mm\\|cm\\|in\\|pt\\|pc\\|deg\\|rad\\|grad\\|ms\\|s\\|Hz\\|kHz\\|rem\\|%\\)\\)" 0 font-lock-constant-face)
     (,"#\\w+" 0 font-lock-keyword-face)
     (,"$\\w+" 0 font-lock-variable-name-face)
     ))

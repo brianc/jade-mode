@@ -52,6 +52,14 @@
     (,"$\\w+" 0 font-lock-variable-name-face)
     ))
 
+(defvar stylus-syntax-table
+  (let ((syntable (make-syntax-table)))
+    (modify-syntax-entry ?\/ ". 124b" syntable)
+    (modify-syntax-entry ?* ". 23" syntable)
+    (modify-syntax-entry ?\n "> b" syntable)
+    syntable)
+  "Syntax table for `stylus-mode'.")
+
 (defun stylus-region-for-sexp ()
   "Selects the current sexp as the region"
   (interactive)
@@ -71,19 +79,18 @@
 (define-derived-mode stylus-mode sws-mode
   "Stylus"
   "Major mode for editing stylus node.js templates"
-  (kill-all-local-variables)
   (setq tab-width 2)
 
   (setq mode-name "Stylus")
   (setq major-mode 'stylus-mode)
 
+  ;; syntax table
+  (set-syntax-table stylus-syntax-table)
+
   ;; highlight syntax
   (setq font-lock-defaults '(stylus-font-lock-keywords))
 
   ;; comments
-  (modify-syntax-entry ?\/ ". 124b")
-  (modify-syntax-entry ?* ". 23")
-  (modify-syntax-entry ?\n "> b")
   (set (make-local-variable 'comment-start) "//")
   (set (make-local-variable 'comment-end) "")
 

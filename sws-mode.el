@@ -47,14 +47,13 @@
 (defun sws-indent-line ()
   "Indents current line"
   (interactive)
-  (if (and (eq (current-indentation) 0)
-           (not (eq last-command 'sws-indent-line)))
-      (indent-to (sws-previous-indentation))
+  (if (eq this-command 'indent-for-tab-command)
     (if mark-active
         (sws-indent-region (region-beginning) (region-end))
       (if (sws-at-bot-p)
           (sws-do-indent-line)
-        (sws-point-to-bot)))))
+        (sws-point-to-bot)))
+    (indent-to (sws-previous-indentation))))
 
 (defun sws-at-bol-p ()
   "If point is at beginning of line"

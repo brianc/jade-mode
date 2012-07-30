@@ -44,7 +44,7 @@ For detail, see `comment-dwim'."
   "Jade keywords.")
 
 (setq jade-font-lock-keywords
-      `((,"!!!\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
+      `((,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
         (,jade-keywords . font-lock-keyword-face) ;; keywords
         (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
         (,"\\(?:^[ {2,}]+\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id

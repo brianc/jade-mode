@@ -58,6 +58,7 @@ For detail, see `comment-dwim'."
 
         (modify-syntax-entry ?\/ ". 12b" syn-table)
         (modify-syntax-entry ?\n "> b" syn-table)
+        (modify-syntax-entry ?' "\"" syn-table)
 
         syn-table))
 

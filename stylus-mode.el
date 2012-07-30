@@ -57,6 +57,7 @@
     (modify-syntax-entry ?\/ ". 124b" syntable)
     (modify-syntax-entry ?* ". 23" syntable)
     (modify-syntax-entry ?\n "> b" syntable)
+    (modify-syntax-entry ?' "\"" syntable)
     syntable)
   "Syntax table for `stylus-mode'.")
 

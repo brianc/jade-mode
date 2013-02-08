@@ -67,3 +67,22 @@ Add the following lines to any of your initialization files
     (require 'jade-mode)    
     (add-to-list 'auto-mode-alist '("\\.styl$" . sws-mode))
     (add-to-list 'auto-mode-alist '("\\.jade$" . jade-mode))
+
+### Flymake support
+
+if you want to add flymake support for jade files:
+
+    (defun flymake-jade-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-intemp))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name)))
+         (arglist (list local-file)))
+        (list "jade" arglist)))
+    (setq flymake-err-line-patterns
+           (cons '("\\(.*\\): \\(.+\\):\\([[:digit:]]+\\)$"
+                  2 3 nil 1)
+                flymake-err-line-patterns))
+    (add-to-list 'flymake-allowed-file-name-masks
+             '("\\.jade\\'" flymake-jade-init))

@@ -86,6 +86,9 @@ For detail, see `comment-dwim'."
   (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
 
+  ;; comment syntax
+  (set (make-local-variable 'comment-start) "// ")
+
   ;; default tab width
   (setq sws-tab-width 2)
   (make-local-variable 'indent-line-function)

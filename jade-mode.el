@@ -40,6 +40,7 @@ For detail, see `comment-dwim'."
   (eval-when-compile
     (regexp-opt
      '("if" "else" "for" "in" "each" "case" "when" "default" "block" "extends"
+       "block append" "block prepend" "append" "prepend"
        "include" "yield" "mixin") 'words))
   "Jade keywords.")
 

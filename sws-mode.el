@@ -82,17 +82,19 @@
 (defun sws-move-region (begin end prog)
   "Moves left is dir is null, otherwise right. prog is '+ or '-"
   (save-excursion
-    (let (first-indent indent-diff)
+    (let ((first-indent indent-diff)
+	  (num-lines-indented (count-lines-region begin end))
+	  )
       (goto-char begin)
       (setq first-indent (current-indentation))
       (sws-indent-to
        (funcall prog first-indent sws-tab-width))
       (setq indent-diff (- (current-indentation) first-indent))
+      (forward-line 1)
       ;; move other lines based on movement of first line
-      (while (< (point) end)
-        (forward-line 1)
-        (if (< (point) end)
-            (sws-indent-to (+ (current-indentation) indent-diff)))))))
+      (dotimes (i (- num-lines-indented 1))
+	(sws-indent-to (+ (current-indentation) indent-diff))
+	(forward-line 1)))))
 
 (defun sws-indent-region (begin end)
   "Indents the selected region"

@@ -2,11 +2,8 @@
 ;;;
 ;;; URL: https://github.com/brianc/jade-mode
 ;;; Author: Brian M. Carlson and other contributors
-;;; Package-Requires: ((sws-mode "0"))
-;;;
-;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
+;;; inspired by http://xahlee.org/emacs/elisp_syntax_coloring.html
 (require 'font-lock)
-(require 'sws-mode)
 
 (defun jade-debug (string &rest args)
   "Prints a debug message"
@@ -72,33 +69,27 @@ For detail, see `comment-dwim'."
       (end-of-line))))
 
 (defvar jade-mode-map (make-sparse-keymap))
-;;defer to sws-mode
-;;(define-key jade-mode-map [S-tab] 'jade-unindent-line)
 
 ;; mode declaration
 ;;;###autoload
-(define-derived-mode jade-mode sws-mode
+(define-derived-mode jade-mode fundamental-mode
   "Jade"
   "Major mode for editing jade node.js templates"
   :syntax-table jade-syntax-table
 
-  (setq tab-width 2)
-
+  ;; turn off electric indent mode for jade buffers (by default, at least)
+  (when (fboundp 'electric-indent-local-mode)
+    (electric-indent-local-mode 0))
   (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
 
   ;; comment syntax
   (set (make-local-variable 'comment-start) "// ")
 
-  ;; default tab width
-  (setq sws-tab-width 2)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'sws-indent-line)
-  (make-local-variable 'indent-region-function)
-
-  (setq indent-region-function 'sws-indent-region)
-
-  (setq indent-tabs-mode nil)
+  (setq-default jade-tab-width 2)
+  (setq-local indent-line-function 'jade-indent-line)
+  (set (make-local-variable 'indent-region-function) 'jade-indent-region)
+  (setq-local indent-tabs-mode nil)
 
   ;; keymap
   (use-local-map jade-mode-map)
@@ -115,3 +106,7 @@ For detail, see `comment-dwim'."
 
 (provide 'jade-mode)
 ;;; jade-mode.el ends here
+
+  (define-key jade-mode-map [tab] 'jade-indent)
+  (define-key jade-mode-map [backtab] 'jade-unindent)
+  (define-key jade-mode-map (kbd "RET") 'jade-newline-and-indent)

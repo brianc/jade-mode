@@ -2,11 +2,8 @@
 ;;;
 ;;; URL: https://github.com/brianc/jade-mode
 ;;; Author: Brian M. Carlson and other contributors
-;;; Package-Requires: ((sws-mode "0"))
-;;;
-;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
+;;; inspired by http://xahlee.org/emacs/elisp_syntax_coloring.html
 (require 'font-lock)
-(require 'sws-mode)
 
 (defun jade-debug (string &rest args)
   "Prints a debug message"
@@ -14,16 +11,15 @@
 
 (defmacro jade-line-as-string ()
   "Returns the current line as a string."
-  `(buffer-substring (point-at-bol) (point-at-eol)))
-
+  `(buffer-substring-no-properties (point-at-bol) (point-at-eol)))
 
 (defun jade-empty-line-p ()
   "If line is empty or not."
   (= (point-at-eol) (point-at-bol)))
 
 (defun jade-blank-line-p ()
-  "If line contains only spaces."
-  (string-match-p "^[ ]*$" (jade-line-as-string)))
+  "Returns t when line contains only whitespace chars, nil otherwise."
+  (string-match-p "^\\s-*$" (jade-line-as-string)))
 
 ;; command to comment/uncomment text
 (defun jade-comment-dwim (arg)
@@ -70,19 +66,144 @@ For detail, see `comment-dwim'."
       (next-line)
       (end-of-line))))
 
+(defun jade-indent ()
+  "Indent current region or line.
+Calls `jade-indent-region' with an active region or `jade-indent-line'
+without."
+  (interactive)
+  (if (region-active-p)
+      (jade-indent-region
+
+       ;; use beginning of line at region-beginning
+       (save-excursion
+         (goto-char (region-beginning))
+         (line-beginning-position))
+
+       ;; use end of line at region-end
+       (save-excursion
+         (goto-char (region-end))
+         (line-end-position)))
+    (jade-indent-line)))
+
+(defun jade-indent-line ()
+  "Indent current line of jade code.
+If the cursor is left of the current indentation, then the first call
+will simply jump to the current indent. Subsequent calls will indent
+the current line by `jade-tab-width' until current indentation is
+nested one tab-width deeper than its parent tag. At that point, an
+additional call will reset indentation to column 0."
+  (interactive)
+  (let ((left-of-indent (>= (current-column) (current-indentation)))
+        (indent (jade-calculate-indent-target)))
+    (if left-of-indent
+
+        ;; if cursor is at or beyond current indent, indent normally
+        (indent-line-to indent)
+
+      ;; if cursor is trailing current indent, first indentation should
+      ;; jump to the current indentation column (subsequent calls
+      ;; will indent normally)
+      (indent-line-to (current-indentation)))))
+
+(defun jade-indent-region (start end)
+  "Indent active region according to indentation of region's first
+line relative to its parent. Keep region active after command
+terminates (to facilitate subsequent indentations of the same region)"
+
+  (interactive "r")
+  (save-excursion
+
+    ;; go to start of region so we can find out its target indent
+    (goto-char start)
+
+    ;; keep region active after command
+    (let* ((deactivate-mark)
+
+           ;; find indent target for first line
+           (first-line-indent-target (jade-calculate-indent-target))
+
+           ;; use current-indentation to turn target indent into
+           ;; a relative indent to apply to each line in region
+           (first-line-relative-indent
+            (- first-line-indent-target (current-indentation))))
+
+      ;; apply relative indent
+      (indent-rigidly start end first-line-relative-indent))))
+
+(defun jade-calculate-indent-target ()
+  "Return the column to which the current line should be indented."
+  (let ((max-indent (+ (jade-previous-line-indentation) jade-tab-width)))
+    (if (>= (current-indentation) max-indent) ;; if at max indentation
+        0
+      (+ (current-indentation) jade-tab-width))))
+
+(defun jade-unindent ()
+  "Unindent active region or current line."
+  (interactive)
+  (if (region-active-p)
+      (jade-unindent-region
+
+       ;; use beginning of line at region-beginning
+       (save-excursion
+         (goto-char (region-beginning))
+         (line-beginning-position))
+
+       ;; use end of line at region-end
+       (save-excursion
+         (goto-char (region-end))
+         (line-end-position)))
+
+    ;; when no region is active
+    (jade-unindent-line)
+    ))
+
+(defun jade-unindent-line ()
+  "Unindent line under point by `jade-tab-width'.
+Calling when `current-indentation' is 0 will have no effect."
+  (indent-line-to
+   (max
+    (- (current-indentation) jade-tab-width)
+    0)))
+
+(defun jade-unindent-region (start end)
+  "Unindent active region by `jade-tab-width'.
+Follows indentation behavior of `indent-rigidly'."
+
+  (interactive "r")
+  (let (deactivate-mark)
+    (indent-rigidly start end (- jade-tab-width))))
+
+(defun jade-previous-line-indentation ()
+  "Get the indentation of the previous (non-blank) line (from point)."
+  (interactive)
+  (save-excursion
+
+    ;; move up to the nearest non-blank line (or buffer start)
+    (while (progn ;; progn used to get do...while control flow
+             (forward-line -1)
+             (and (jade-blank-line-p) (not (= (point-at-bol) (point-min))))))
+    (let ((prev-line-indent (current-indentation)))
+      prev-line-indent)))
+
+(defun jade-newline-and-indent ()
+  "Insert newline and indent to parent's indentation level."
+  (interactive)
+  (newline)
+  (indent-line-to (max (jade-previous-line-indentation) 0))
+  )
+
 (defvar jade-mode-map (make-sparse-keymap))
-;;defer to sws-mode
-;;(define-key jade-mode-map [S-tab] 'jade-unindent-line)
 
 ;; mode declaration
 ;;;###autoload
-(define-derived-mode jade-mode sws-mode
+(define-derived-mode jade-mode fundamental-mode
   "Jade"
   "Major mode for editing jade node.js templates"
   :syntax-table jade-syntax-table
 
-  (setq tab-width 2)
-
+  ;; turn off electric indent mode for jade buffers (by default, at least)
+  (when (fboundp 'electric-indent-local-mode)
+    (electric-indent-local-mode 0))
   (setq mode-name "Jade")
   (setq major-mode 'jade-mode)
 
@@ -90,21 +211,19 @@ For detail, see `comment-dwim'."
   (set (make-local-variable 'comment-start) "// ")
   (set (make-local-variable 'comment-start-skip) "//\\s-*")
 
-  ;; default tab width
-  (setq sws-tab-width 2)
-  (make-local-variable 'indent-line-function)
-  (setq indent-line-function 'sws-indent-line)
-  (make-local-variable 'indent-region-function)
-
-  (setq indent-region-function 'sws-indent-region)
-
-  (setq indent-tabs-mode nil)
+  (setq-default jade-tab-width 2)
+  (setq-local indent-line-function 'jade-indent-line)
+  (set (make-local-variable 'indent-region-function) 'jade-indent-region)
+  (setq-local indent-tabs-mode nil)
 
   ;; keymap
   (use-local-map jade-mode-map)
 
   ;; modify the keymap
   (define-key jade-mode-map [remap comment-dwim] 'jade-comment-dwim)
+  (define-key jade-mode-map [tab] 'jade-indent)
+  (define-key jade-mode-map [backtab] 'jade-unindent)
+  (define-key jade-mode-map (kbd "RET") 'jade-newline-and-indent)
 
   ;; highlight syntax
   (setq font-lock-defaults '(jade-font-lock-keywords)))
@@ -115,3 +234,4 @@ For detail, see `comment-dwim'."
 
 (provide 'jade-mode)
 ;;; jade-mode.el ends here
+

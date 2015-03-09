@@ -18,6 +18,11 @@ html(lang="en")
           p Get on it!
           form
             input(type: "text", name='user[name]', readonly: true, disabled)
+        div#single-quote.example
+          = 'this single quote should highlight as a string'
+          = 'this one' + "and this should too"
+          span this one shouldn't higlight strings or... .other #things if else
+          | this one shouldn't highlight strings, and the same goes for .keywords #ok ?
       #footer
         #copywrite-text= locals
 

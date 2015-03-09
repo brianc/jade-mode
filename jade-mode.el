@@ -50,13 +50,12 @@ For detail, see `comment-dwim'."
     (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
-    (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face))) ;; tag name
+    (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face) ;; tag name
+    (,"^\\s-*//.*" 0 font-lock-comment-face t))) ;; jade block comments
 
 ;; syntax table
 (defvar jade-syntax-table
   (let ((syn-table (make-syntax-table)))
-    (modify-syntax-entry ?\/ ". 12b" syn-table)
-    (modify-syntax-entry ?\n "> b" syn-table)
     (modify-syntax-entry ?' "\"" syn-table)
     syn-table)
   "Syntax table for `jade-mode'.")
@@ -89,6 +88,7 @@ For detail, see `comment-dwim'."
 
   ;; comment syntax
   (set (make-local-variable 'comment-start) "// ")
+  (set (make-local-variable 'comment-start-skip) "//\\s-*")
 
   ;; default tab width
   (setq sws-tab-width 2)

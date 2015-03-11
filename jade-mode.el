@@ -40,19 +40,44 @@ For detail, see `comment-dwim'."
        "include" "yield" "mixin") 'words))
   "Jade keywords.")
 
+(defvar jade-double-quote-string-re "[\"]\\(\\\\.\\|[^\"\n]\\)*[\"]"
+  "Regexp used to match a double-quoted string literal")
+
+(defvar jade-single-quote-string-re "[']\\(\\\\.\\|[^'\n]\\)*[']"
+  "Regexp used to match a single-quoted string literal")
+
 (defvar jade-font-lock-keywords
-  `((,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
+  `(
+    ;; higlight string literals on lines beginning with an equals sign
+    ;; TODO improve this to play nice with attribute assignments in
+    ;; parentheses following tags
+    (,(concat "^\\s-*"
+              "=")
+              (,(concat jade-single-quote-string-re "\\|" jade-double-quote-string-re)
+               nil
+               nil
+               (0 font-lock-string-face)))
+
+    (,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
     (,jade-keywords . font-lock-keyword-face) ;; keywords
     (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
     (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face) ;; tag name
-    (,"^\\s-*//.*" 0 font-lock-comment-face t))) ;; jade block comments
+    (,"^\\s-*\\(//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+
+    ;; remove highlighting from lines opening with a pipe `|'
+    ;; e.g. | keywords like for should not be highlighted here
+    ;;      | I'm not supposed to highlight single quotes either
+    (,(concat "^\\s-*"
+              "\\("
+              "|"
+              ".*"
+              "\\)") 1 nil t)))
 
 ;; syntax table
 (defvar jade-syntax-table
   (let ((syn-table (make-syntax-table)))
-    (modify-syntax-entry ?' "\"" syn-table)
     syn-table)
   "Syntax table for `jade-mode'.")
 

@@ -110,7 +110,7 @@
   (use-local-map stylus-mode-map))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.styl$" . stylus-mode))
+(add-to-list 'auto-mode-alist '("\\.styl\\'" . stylus-mode))
 
 (provide 'stylus-mode)
 ;;; stylus-mode.el ends here

@@ -255,8 +255,7 @@ Follows indentation behavior of `indent-rigidly'."
 
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.jade$" . jade-mode))
+(add-to-list 'auto-mode-alist '("\\.jade\\'" . jade-mode))
 
 (provide 'jade-mode)
 ;;; jade-mode.el ends here
-

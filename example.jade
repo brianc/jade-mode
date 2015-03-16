@@ -5,7 +5,7 @@ html(lang="en")
   body.bp
     #container
       #header
-        h1.page-title= My.awesome. page #is awesome#
+        h1.page-title My.awesome. page #is awesome#
       #nav
         ul#nav_list something sweet
           li
@@ -23,6 +23,7 @@ html(lang="en")
           = 'this one' + "and this should too"
           span this one shouldn't higlight strings or... .other #things if else
           | this one shouldn't highlight strings, and the same goes for .keywords #ok ?
+        div#paren.content.example(style = 'float-left') Content .here #should be plain if for
       #footer
         #copywrite-text= locals
 

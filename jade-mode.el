@@ -40,6 +40,15 @@ For detail, see `comment-dwim'."
        "include" "yield" "mixin") 'words))
   "Jade keywords.")
 
+(defvar jade-tag-re "[a-z][a-z0-9]*"
+  "Regexp used to match a basic html tag, e.g. link, a, div")
+
+(defvar jade-id-re "#[a-zA-Z][0-9a-zA-Z_\\-]*"
+  "Regexp used to match an ID literal, e.g. #id, #id-one_23")
+
+(defvar jade-class-re "[.][a-zA-Z][0-9a-zA-Z_\\-]*"
+  "Regexp used to match a class literal, e.g. .class, .class_name-123")
+
 (defvar jade-double-quote-string-re "[\"]\\(\\\\.\\|[^\"\n]\\)*[\"]"
   "Regexp used to match a double-quoted string literal")
 
@@ -65,6 +74,25 @@ For detail, see `comment-dwim'."
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
     (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face) ;; tag name
     (,"^\\s-*\\(//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+
+    ;; remove highlighting from literal content following tag/class/id
+    ;; e.g. tag Inner text
+    ;;      tag#id.class INNER text
+    (,(concat "^\\s-*"
+
+              ;; start with a basic html tag, an ID, or a class
+              "\\(" jade-tag-re "\\|" jade-id-re "\\|" jade-class-re "\\)"
+
+              ;; followed by zero or more of either an ID or a class
+              "\\(" jade-id-re "\\|" jade-class-re "\\)*"
+
+              ;; then an optional set of parens with JS inside
+              ;; TODO highlight JS in a meaningful way
+              "\\(" "(.*)" "\\)?"
+
+              ;; then a space (not an equals sign), and match the rest of the line
+              ;; and remove any font-lock faces applied
+              "[ ]\\(.+\\)") 4 nil t)
 
     ;; remove highlighting from lines opening with a pipe `|'
     ;; e.g. | keywords like for should not be highlighted here

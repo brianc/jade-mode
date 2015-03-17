@@ -1,5 +1,6 @@
 !!!
 html(lang="en")
+  -// consult http://jade-lang.com for a full language reference
   head
     title My page
   body.bp
@@ -11,6 +12,7 @@ html(lang="en")
           li
       #content
         // here is a real comment
+        -// here is another real comment, this is probably a better default
         a(href = 'http://www.google.com') http://www.google.com
         - if (youAreUsingJade)
           p You are amazing

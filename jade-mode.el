@@ -21,16 +21,36 @@
   "Returns t when line contains only whitespace chars, nil otherwise."
   (string-match-p "^\\s-*$" (jade-line-as-string)))
 
-;; command to comment/uncomment text
 (defun jade-comment-dwim (arg)
-  "Comment or uncomment current line or region in a smart way.
-For detail, see `comment-dwim'."
+  "Comment or uncomment current line or region in a smart way."
   (interactive "*P")
   (require 'newcomment)
-  (let (
-        (comment-start "//") (comment-end "")
-        )
-    (comment-dwim arg)))
+  (let ((start (if (region-active-p)
+
+                   ;; when region is active, use beginning of line at
+                   ;; beginning of region (this way we don't start
+                   ;; commenting in the middle of a line)
+                   (progn
+                     (save-excursion
+                       (goto-char (region-beginning))
+                       (point-at-bol)))
+
+                 ;; without a region, just use beginning of current line
+                 (point-at-bol)))
+
+        ;; same logic applies for end of line/region
+        (end (if (region-active-p)
+                 (progn
+                   (save-excursion
+                     (goto-char (region-end))
+                     (point-at-eol)))
+               (point-at-eol))))
+
+    ;; once we pick good values for start/end of region, simply use
+    ;; `comment-or-uncomment-region' from `newcomment' lib, and skip
+    ;; to next line for convenience
+    (comment-or-uncomment-region start end)
+    (forward-line)))
 
 (defconst jade-keywords
   (eval-when-compile
@@ -73,7 +93,7 @@ For detail, see `comment-dwim'."
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
     (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
     (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face) ;; tag name
-    (,"^\\s-*\\(//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+    (,"^\\s-*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
 
     ;; remove highlighting from literal content following tag/class/id
     ;; e.g. tag Inner text
@@ -261,8 +281,8 @@ Follows indentation behavior of `indent-rigidly'."
   (setq major-mode 'jade-mode)
 
   ;; comment syntax
-  (set (make-local-variable 'comment-start) "// ")
-  (set (make-local-variable 'comment-start-skip) "//\\s-*")
+  (set (make-local-variable 'comment-start) "-// ")
+  (set (make-local-variable 'comment-start-skip) "-//\\s-*")
 
   (setq-default jade-tab-width 2)
   (setq-local indent-line-function 'jade-indent-line)

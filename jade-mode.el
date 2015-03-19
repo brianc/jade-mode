@@ -77,15 +77,9 @@
 
 (defvar jade-font-lock-keywords
   `(
-    ;; higlight string literals on lines beginning with an equals sign
-    ;; TODO improve this to play nice with attribute assignments in
-    ;; parentheses following tags
-    (,(concat "^\\s-*"
-              "=")
-              (,(concat jade-single-quote-string-re "\\|" jade-double-quote-string-re)
-               nil
-               nil
-               (0 font-lock-string-face)))
+    ;; highlight string literals everywhere (except where we later
+    ;; remove all font lock faces)
+    (,(concat jade-single-quote-string-re "\\|" jade-double-quote-string-re) . font-lock-string-face)
 
     (,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
     (,jade-keywords . font-lock-keyword-face) ;; keywords
@@ -298,8 +292,8 @@ Follows indentation behavior of `indent-rigidly'."
   (define-key jade-mode-map [backtab] 'jade-unindent)
   (define-key jade-mode-map (kbd "RET") 'jade-newline-and-indent)
 
-  ;; highlight syntax
-  (setq font-lock-defaults '(jade-font-lock-keywords)))
+  ;; highlight keywords, ignore syntactic font-lock
+  (setq font-lock-defaults '(jade-font-lock-keywords t)))
 
 
 ;;;###autoload

@@ -4,6 +4,7 @@
 ;;; Author: Brian M. Carlson and other contributors
 ;;; inspired by http://xahlee.org/emacs/elisp_syntax_coloring.html
 (require 'font-lock)
+(require 'js)
 
 (defun jade-debug (string &rest args)
   "Prints a debug message"
@@ -75,12 +76,11 @@
 (defvar jade-single-quote-string-re "[']\\(\\\\.\\|[^'\n]\\)*[']"
   "Regexp used to match a single-quoted string literal")
 
+(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#]"
+  "Regexp used to match a character in a tag declaration")
+
 (defvar jade-font-lock-keywords
   `(
-    ;; highlight string literals everywhere (except where we later
-    ;; remove all font lock faces)
-    (,(concat jade-single-quote-string-re "\\|" jade-double-quote-string-re) . font-lock-string-face)
-
     (,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
     (,jade-keywords . font-lock-keyword-face) ;; keywords
     (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
@@ -115,12 +115,72 @@
               "\\("
               "|"
               ".*"
-              "\\)") 1 nil t)))
+              "\\)") 1 nil t)
 
-;; syntax table
+    ;; we abuse font-lock a bit here; these functions inject js-mode
+    ;; highlighting under the guise of matching text for more standard
+    ;; font-lock face application (like we do with regexps above)
+    (jade-highlight-js-in-parens 1 font-lock-preprocessor-face)
+    (jade-highlight-js-after-tag 1 font-lock-preprocessor-face)))
+
+(defun jade-highlight-js-in-parens (limit)
+  "Search for a tag declaration (up to LIMIT) which contains a paren
+block, then highlight the region between the parentheses as
+javascript."
+  (when (re-search-forward (concat "^\\s-*" jade-tag-declaration-char-re "+" "(") limit t)
+    (forward-char -1)
+    (let ((start (point))
+          (end (progn
+                 (forward-sexp)
+                 (1- (point)))))
+      (jade-fontify-region-as-js start end)
+      (forward-char -1)
+
+      ;; return some empty match data to appease the font-lock gods
+      (looking-at "\\(\\)"))))
+
+(defun jade-highlight-js-after-tag (limit)
+  "Search for a valid js block, then highlight its contents with js-mode syntax highlighting"
+  (when (re-search-forward "^[ \t]*" limit t)
+    (when (not (eolp))
+
+      ;; before parsing/skipping ahead, check the first char; if it's
+      ;; - (not a comment starter!) or =, then we know it's a JS block
+      (if (or (looking-at "-[^/]") (looking-at "="))
+          (jade-fontify-region-as-js (point) (point-at-eol))
+
+        ;; no luck with the first char, so parse to the end of the tag
+        ;; (including optional paren block) and check for '='
+        (jade-goto-end-of-tag)
+        (if (and (looking-at "=") (not (eolp)))
+            (jade-fontify-region-as-js (point) (point-at-eol)))))
+
+    ;; return some empty match data to appease the font-lock gods
+    (looking-at "\\(\\)")))
+
+(defun jade-goto-end-of-tag ()
+  "Skip ahead over whitespace, tag characters (defined in
+`jade-tag-declaration-char-re'), and paren blocks (using
+`forward-sexp') to put point at the end of a full tag declaration (but
+before its content). Use when point is inside or to the left of a tag
+declaration"
+  (interactive)
+
+  ;; skip indentation characters
+  (while (looking-at "[ \t]")
+    (forward-char 1))
+
+  (while (looking-at jade-tag-declaration-char-re)
+    (forward-char 1))
+  (if (looking-at "(")
+      (forward-sexp 1)))
+
+
 (defvar jade-syntax-table
-  (let ((syn-table (make-syntax-table)))
-    syn-table)
+  (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?\' "\"" table)
+    table)
   "Syntax table for `jade-mode'.")
 
 (defun jade-region-for-sexp ()
@@ -176,7 +236,6 @@ additional call will reset indentation to column 0."
   "Indent active region according to indentation of region's first
 line relative to its parent. Keep region active after command
 terminates (to facilitate subsequent indentations of the same region)"
-
   (interactive "r")
   (save-excursion
 
@@ -221,8 +280,7 @@ terminates (to facilitate subsequent indentations of the same region)"
          (line-end-position)))
 
     ;; when no region is active
-    (jade-unindent-line)
-    ))
+    (jade-unindent-line)))
 
 (defun jade-unindent-line ()
   "Unindent line under point by `jade-tab-width'.
@@ -235,7 +293,6 @@ Calling when `current-indentation' is 0 will have no effect."
 (defun jade-unindent-region (start end)
   "Unindent active region by `jade-tab-width'.
 Follows indentation behavior of `indent-rigidly'."
-
   (interactive "r")
   (let (deactivate-mark)
     (indent-rigidly start end (- jade-tab-width))))
@@ -256,8 +313,30 @@ Follows indentation behavior of `indent-rigidly'."
   "Insert newline and indent to parent's indentation level."
   (interactive)
   (newline)
-  (indent-line-to (max (jade-previous-line-indentation) 0))
-  )
+  (indent-line-to (max (jade-previous-line-indentation) 0)))
+
+(defun jade-fontify-region-as-js (beg end)
+  "Fontify a region between BEG and END using js-mode fontification.
+Inspired by (read: stolen from) from `haml-mode'. Note the clever use
+of `narrow-to-region' by the author of `haml-mode' to keep syntactic
+highlighting (maybe other things too?) from looking beyond the
+region defined by BEG and END."
+  (save-excursion
+    (save-match-data
+      (let ((font-lock-keywords js--font-lock-keywords-3)
+            (font-lock-syntax-table js-mode-syntax-table)
+            (font-lock-syntactic-keywords nil)
+            (syntax-propertize-function nil)
+            (font-lock-multiline 'undecided)
+            (font-lock-dont-widen t)
+            font-lock-keywords-only
+            font-lock-extend-region-functions
+            font-lock-keywords-case-fold-search)
+        (when (and (fboundp 'js--update-quick-match-re) (null js--quick-match-re-func))
+          (js--update-quick-match-re))
+        (save-restriction
+          (narrow-to-region beg end)
+          (font-lock-fontify-region beg end))))))
 
 (defvar jade-mode-map (make-sparse-keymap))
 

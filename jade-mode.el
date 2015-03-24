@@ -81,13 +81,13 @@
 
 (defvar jade-font-lock-keywords
   `(
-    (,"!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
+    ("!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
     (,jade-keywords . font-lock-keyword-face) ;; keywords
-    (,"#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
-    (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
-    (,"\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
-    (,"^[ {2,}]*[a-z0-9_:\\-]*" 0 font-lock-function-name-face) ;; tag name
-    (,"^\\s-*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+    ("#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
+    ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
+    ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
+    ("^[ \t]*\\([a-zA-Z0-9]+\\)" 1 font-lock-function-name-face) ;; tag name
+    ("^\\s-*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
 
     ;; remove highlighting from literal content following tag/class/id
     ;; e.g. tag Inner text
@@ -111,11 +111,7 @@
     ;; remove highlighting from lines opening with a pipe `|'
     ;; e.g. | keywords like for should not be highlighted here
     ;;      | I'm not supposed to highlight single quotes either
-    (,(concat "^\\s-*"
-              "\\("
-              "|"
-              ".*"
-              "\\)") 1 nil t)
+    (,(concat "^[ \t]*" "\\(" "|.*" "\\)") 1 nil t)
 
     ;; we abuse font-lock a bit here; these functions inject js-mode
     ;; highlighting under the guise of matching text for more standard
@@ -127,17 +123,16 @@
   "Search for a tag declaration (up to LIMIT) which contains a paren
 block, then highlight the region between the parentheses as
 javascript."
-  (when (re-search-forward (concat "^\\s-*" jade-tag-declaration-char-re "+" "(") limit t)
+  (when (re-search-forward (concat "^[ \t]*" jade-tag-declaration-char-re "+" "(") limit t)
     (forward-char -1)
     (let ((start (point))
           (end (progn
-                 (forward-sexp)
-                 (1- (point)))))
-      (jade-fontify-region-as-js start end)
-      (forward-char -1)
+                   (forward-sexp)
+                   (1- (point)))))
+          (jade-fontify-region-as-js start end))
 
       ;; return some empty match data to appease the font-lock gods
-      (looking-at "\\(\\)"))))
+      (looking-at "\\(\\)")))
 
 (defun jade-highlight-js-after-tag (limit)
   "Search for a valid js block, then highlight its contents with js-mode syntax highlighting"
@@ -180,6 +175,7 @@ declaration"
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "\"" table)
     (modify-syntax-entry ?\' "\"" table)
+    (modify-syntax-entry ?_ "w" table)
     table)
   "Syntax table for `jade-mode'.")
 

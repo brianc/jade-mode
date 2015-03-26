@@ -87,7 +87,7 @@
     ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
     ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
     ("^[ \t]*\\([a-zA-Z0-9]+\\)" 1 font-lock-function-name-face) ;; tag name
-    ("^\\s-*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+    ("^[ \t]*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
 
     ;; remove highlighting from literal content following tag/class/id
     ;; e.g. tag Inner text
@@ -350,8 +350,8 @@ region defined by BEG and END."
   (setq major-mode 'jade-mode)
 
   ;; comment syntax
-  (set (make-local-variable 'comment-start) "-// ")
-  (set (make-local-variable 'comment-start-skip) "-//\\s-*")
+  (set (make-local-variable 'comment-start) "//- ")
+  (set (make-local-variable 'comment-start-skip) "//-\\s-*")
 
   (setq-default jade-tab-width 2)
   (setq-local indent-line-function 'jade-indent-line)

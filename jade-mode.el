@@ -81,7 +81,6 @@
 
 (defvar jade-font-lock-keywords
   `(
-    ("!!!\\|doctype\\( ?[A-Za-z0-9\-\_]*\\)?" 0 font-lock-comment-face) ;; doctype
     (,jade-keywords . font-lock-keyword-face) ;; keywords
     ("#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
     ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
@@ -117,7 +116,10 @@
     ;; highlighting under the guise of matching text for more standard
     ;; font-lock face application (like we do with regexps above)
     (jade-highlight-js-in-parens 1 font-lock-preprocessor-face)
-    (jade-highlight-js-after-tag 1 font-lock-preprocessor-face)))
+    (jade-highlight-js-after-tag 1 font-lock-preprocessor-face)
+
+    ;; doctype re-overrides some of the fontification rules
+    ("!!!\\|doctype[ ]?.*" 0 font-lock-comment-face t)))
 
 (defun jade-highlight-js-in-parens (limit)
   "Search for a tag declaration (up to LIMIT) which contains a paren

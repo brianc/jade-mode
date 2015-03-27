@@ -1,4 +1,4 @@
-!!!
+doctype html
 html(lang="en", class = ['classOne', 'classTwo'].join(','))
   -// consult http://jade-lang.com for a full language reference
   head
@@ -31,7 +31,7 @@ html(lang="en", class = ['classOne', 'classTwo'].join(','))
         div.examples#javascript
           - var a = 1;
           - var helperFunction = function (a) { return (a === 1 ? 'singular' : 'plural'); };
-          span= locals.someArray.join(', ')
+          span= someArray.join(', ')
           span= a.toString() + helperFunction(a)
           span#id.class(style = 'margin-bottom: 0;')= "some_js_expression".split('_').join(' ')
       #footer

@@ -119,7 +119,7 @@
     (jade-highlight-js-after-tag 1 font-lock-preprocessor-face)
 
     ;; doctype re-overrides some of the fontification rules
-    ("!!!\\|doctype[ ]?.*" 0 font-lock-comment-face t)))
+    ("^!!!\\|doctype[ ]?.*" 0 font-lock-comment-face t)))
 
 (defun jade-highlight-js-in-parens (limit)
   "Search for a tag declaration (up to LIMIT) which contains a paren

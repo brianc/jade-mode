@@ -119,7 +119,7 @@
     (jade-highlight-js-after-tag 1 font-lock-preprocessor-face)
 
     ;; doctype re-overrides some of the fontification rules
-    ("!!!\\|doctype[ ]?.*" 0 font-lock-comment-face t)))
+    ("^!!!\\|doctype[ ]?.*" 0 font-lock-comment-face t)))
 
 (defun jade-highlight-js-in-parens (limit)
   "Search for a tag declaration (up to LIMIT) which contains a paren
@@ -355,10 +355,10 @@ region defined by BEG and END."
   (set (make-local-variable 'comment-start) "//- ")
   (set (make-local-variable 'comment-start-skip) "//-\\s-*")
 
-  (setq-default jade-tab-width 2)
-  (setq-local indent-line-function 'jade-indent-line)
+  (set (make-local-variable 'jade-tab-width) 2)
+  (set (make-local-variable 'indent-line-function) 'jade-indent-line)
   (set (make-local-variable 'indent-region-function) 'jade-indent-region)
-  (setq-local indent-tabs-mode nil)
+  (set (make-local-variable 'indent-tabs-mode) nil)
 
   ;; keymap
   (use-local-map jade-mode-map)

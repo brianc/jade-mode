@@ -317,7 +317,6 @@ Follows indentation behavior of `indent-rigidly'."
     ;; move down to the next non-blank line (or buffer end)
     (while (progn ;; progn used to get do...while control flow
              (forward-line 1)
-             (message "cur line %d" (line-number-at-pos))
              (and (jade-blank-line-p) (not (= (point-at-eol) (point-max))))))
     (let ((next-line-indent (current-indentation)))
       next-line-indent)))

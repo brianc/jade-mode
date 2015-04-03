@@ -6,6 +6,8 @@
 (require 'font-lock)
 (require 'js)
 
+(defvar jade-tab-width)
+
 (defun jade-debug (string &rest args)
   "Prints a debug message"
   (apply 'message (append (list string) args)))
@@ -187,8 +189,8 @@ declaration"
   (beginning-of-line)
   (let ((ci (current-indentation)))
     (push-mark nil nil t)
-    (while (> (jade-next-line-indent) ci)
-      (next-line)
+    (while (> (jade-next-line-indentation) ci)
+      (forward-line)
       (end-of-line))))
 
 (defun jade-indent ()
@@ -306,6 +308,19 @@ Follows indentation behavior of `indent-rigidly'."
              (and (jade-blank-line-p) (not (= (point-at-bol) (point-min))))))
     (let ((prev-line-indent (current-indentation)))
       prev-line-indent)))
+
+(defun jade-next-line-indentation ()
+  "Get the indentation of the next (non-blank) line (from point)."
+  (interactive)
+  (save-excursion
+
+    ;; move down to the next non-blank line (or buffer end)
+    (while (progn ;; progn used to get do...while control flow
+             (forward-line 1)
+             (message "cur line %d" (line-number-at-pos))
+             (and (jade-blank-line-p) (not (= (point-at-eol) (point-max))))))
+    (let ((next-line-indent (current-indentation)))
+      next-line-indent)))
 
 (defun jade-newline-and-indent ()
   "Insert newline and indent to parent's indentation level."

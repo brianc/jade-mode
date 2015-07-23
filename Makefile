@@ -1,4 +1,4 @@
 test:
-	emacs -batch -L . -l ./tests/highlight.el -l ./tests/indentation.el -f ert-run-tests-batch-and-exit
+	cask exec ert-runner -l jade-mode.el
 # Local Variables:
 # indent-tabs-mode: t

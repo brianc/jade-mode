@@ -1,6 +1,3 @@
-(require 'ert)
-(require 'jade-mode)
-
 (ert-deftest jade-mode-command-should-be-bound ()
   (with-temp-buffer
     (should (fboundp 'jade-mode))
@@ -29,5 +26,3 @@
     (should (=
              (next-single-property-change (point) 'face)
              (point-at-eol)))))
-
-

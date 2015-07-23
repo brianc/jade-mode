@@ -1,7 +1,9 @@
 (source gnu)
 (source melpa)
 
-(package-file "TODO")
+(package "jade-mode" "0.2.1" "Syntax hilighting and smart-tabs for jade html language")
+
+;; (package-file "jade-mode.el")
 
 (development
  (depends-on "f")

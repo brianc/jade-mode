@@ -4,25 +4,22 @@
     (should (null (jade-mode)))))
 
 (ert-deftest jade-mode-highlight-doctype ()
-  (with-temp-buffer
-
-    ;; interesting - if you omit the trailing newline in the string,
-    ;; `font-lock-fontify-buffer' will freak out and fail with
-    ;; end-of-buffer
-    (insert "doctype html\nhtml content\n\n")
-    (jade-mode)
-
-    ;; temp buffers require explict fontification
-    (font-lock-fontify-buffer)
-
-    ;; face at char 1 should be `font-lock-comment-face'
+  (jade-test-with-temp-buffer-pt-min
+      "doctype html\n\n"
+    (should (eq (get-text-property 1 'face)
+                'font-lock-comment-face))
     (should (eq
-             (get-text-property 1  'face)
-             'font-lock-comment-face))
-    (goto-char 1)
-
-    ;; face shouldn't change (from `font-lock-comment-face') b/t char
-    ;; 1 and eol
-    (should (=
              (next-single-property-change (point) 'face)
              (point-at-eol)))))
+
+(ert-deftest jade-mode-highlights-in-isolation ()
+  (jade-test-highlight-one-word "doctype html" 'font-lock-comment-face 0)
+  (jade-test-highlight-one-word "head" 'font-lock-function-name-face 1)
+  (jade-test-highlight-one-word "body" 'font-lock-function-name-face 2)
+  (jade-test-highlight-one-word "#container" 'font-lock-variable-name-face 2)
+  (jade-test-highlight-one-word ".class" 'font-lock-type-face 2)
+  (jade-test-highlight-one-word "if" 'font-lock-keyword-face 2)
+  (jade-test-highlight-one-word "// this is a comment" 'font-lock-comment-face 2)
+  (jade-test-highlight-one-word "//- this is a comment" 'font-lock-comment-face 2)
+  (jade-test-highlight-one-word "//- this is a comment" 'font-lock-comment-face 2)
+  (jade-test-highlight-one-word "-// this is a comment" 'font-lock-comment-face 2))

@@ -26,12 +26,17 @@
   (and (eq (point) (point-max)) (goto-char (point-min)))
   (search-forward string nil t 1))
 
+(defun jade-test--show-tested-text (text form)
+  form)
+
 (defmacro jade-test-highlight-one-word (word face n)
   `(jade-test-with-temp-buffer-pt-min
        ,(concat (s-repeat n "\t") word "\n\n")
      (print (buffer-string))
-     (should (eq (get-text-property
-                  ,(+ 1 n) 'face)
+     (should (eq (jade-test--show-tested-text
+                  ,word
+                  (get-text-property
+                   ,(+ 1 n) 'face))
                  ,face))
      (goto-char ,(+ 1 n))
      (should (eq

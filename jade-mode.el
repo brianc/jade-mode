@@ -81,7 +81,7 @@
 (defvar jade-single-quote-string-re "[']\\(\\\\.\\|[^'\n]\\)*[']"
   "Regexp used to match a single-quoted string literal")
 
-(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#]"
+(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#+]"
   "Regexp used to match a character in a tag declaration")
 
 (defvar jade-font-lock-keywords
@@ -89,7 +89,7 @@
     (,jade-keywords . font-lock-keyword-face) ;; keywords
     (,jade-id-re . font-lock-variable-name-face) ;; id
     (,jade-class-re . font-lock-type-face) ;; class name
-    ("\\(-?//.*\\)" . font-lock-comment-face) ;; jade block comments
+    ("\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
     (,jade-tag-re . font-lock-function-name-face)
     ;; tag name
 

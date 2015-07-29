@@ -28,6 +28,7 @@ html(lang="en", class = ['classOne', 'classTwo'].join(','))
           span this one shouldn't higlight strings or... .other #things if else
           | this one shouldn't highlight strings, and the same goes for .keywords #ok ?
         div#paren.content.example(style = 'float: left;') Content .here #should be plain if for
+        +help("if this is .bolded #that's bad, we want a string","a second arg or else"); 
         div.examples#javascript
           - var a = 1;
           - var helperFunction = function (a) { return (a === 1 ? 'singular' : 'plural'); };

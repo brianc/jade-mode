@@ -78,7 +78,7 @@
 (defvar jade-single-quote-string-re "[']\\(\\\\.\\|[^'\n]\\)*[']"
   "Regexp used to match a single-quoted string literal")
 
-(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#]"
+(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#+]"
   "Regexp used to match a character in a tag declaration")
 
 (defvar jade-font-lock-keywords

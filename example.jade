@@ -25,6 +25,7 @@ html(lang="en", class = ['classOne', 'classTwo'].join(','))
           = 'this single quote should highlight as a string'
           = 'this one' + "and this should too"
           span= 'another' + "quote example"
+					+this_is_a_mixin("this is a parameter")
           span this one shouldn't higlight strings or... .other #things if else
           | this one shouldn't highlight strings, and the same goes for .keywords #ok ?
         div#paren.content.example(style = 'float: left;') Content .here #should be plain if for

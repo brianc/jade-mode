@@ -72,23 +72,26 @@
 (defvar jade-class-re "[.][a-zA-Z][0-9a-zA-Z_\\-]*"
   "Regexp used to match a class literal, e.g. .class, .class_name-123")
 
+(defvar jade-mixin-re "[+][a-zA-Z][0-9a-zA-Z_\\-]*"
+  "Regexp used to match a mixin name")
+
 (defvar jade-double-quote-string-re "[\"]\\(\\\\.\\|[^\"\n]\\)*[\"]"
   "Regexp used to match a double-quoted string literal")
 
 (defvar jade-single-quote-string-re "[']\\(\\\\.\\|[^'\n]\\)*[']"
   "Regexp used to match a single-quoted string literal")
 
-(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#]"
+(defvar jade-tag-declaration-char-re "[-a-zA-Z0-9_.#+]"
   "Regexp used to match a character in a tag declaration")
 
 (defvar jade-font-lock-keywords
   `(
     (,jade-keywords . font-lock-keyword-face) ;; keywords
-    ("#\\(\\w\\|_\\|-\\)*" . font-lock-variable-name-face) ;; id
-    ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(#[A-Za-z0-9\-\_]*[^ ]\\)" 1 font-lock-variable-name-face) ;; id
-    ("\\(?:^[ {2,}]*\\(?:[a-z0-9_:\\-]*\\)\\)?\\(\\.[A-Za-z0-9\-\_]*\\)" 1 font-lock-type-face) ;; class name
-    ("^[ \t]*\\([a-zA-Z0-9]+\\)" 1 font-lock-function-name-face) ;; tag name
-    ("^[ \t]*\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+    (,jade-id-re . font-lock-variable-name-face) ;; id
+    (,jade-class-re . font-lock-type-face) ;; class name
+    ("\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
+    (,jade-tag-re . font-lock-function-name-face)
+    ;; tag name
 
     ;; remove highlighting from literal content following tag/class/id
     ;; e.g. tag Inner text

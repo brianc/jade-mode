@@ -89,8 +89,9 @@
     (,jade-keywords . font-lock-keyword-face) ;; keywords
     (,jade-id-re . font-lock-variable-name-face) ;; id
     (,jade-class-re . font-lock-type-face) ;; class name
-    ("\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
     (,jade-tag-re . font-lock-function-name-face)
+    (,jade-mixin-re 0 font-lock-constant-face t)
+    ("\\(-?//.*\\)" 1 font-lock-comment-face t) ;; jade block comments
     ;; tag name
 
     ;; remove highlighting from literal content following tag/class/id

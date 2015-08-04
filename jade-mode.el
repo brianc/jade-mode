@@ -149,17 +149,23 @@ javascript."
 
       ;; before parsing/skipping ahead, check the first char; if it's
       ;; - (not a comment starter!) or =, then we know it's a JS block
-      (if (or (looking-at "-[^/]") (looking-at "="))
+      (if (or (looking-at "-[^/]") (looking-at "[!]?="))
           (jade-fontify-region-as-js (point) (point-at-eol))
 
         ;; no luck with the first char, so parse to the end of the tag
         ;; (including optional paren block) and check for '='
         (jade-goto-end-of-tag)
-        (if (and (looking-at "=") (not (eolp)))
+        (if (and (looking-at "[!]?=") (not (eolp)))
             (jade-fontify-region-as-js (point) (point-at-eol)))))
 
     ;; return some empty match data to appease the font-lock gods
     (looking-at "\\(\\)")))
+
+(defun reload-jade-mode ()
+  (interactive)
+  (when (fboundp 'jade-mode)
+        (unload-feature 'jade-mode))
+  (eval-buffer "jade-mode.el"))
 
 (defun jade-goto-end-of-tag ()
   "Skip ahead over whitespace, tag characters (defined in

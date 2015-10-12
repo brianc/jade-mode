@@ -1,4 +1,5 @@
 # sws-mode
+[![MELPA](http://melpa.org/packages/jade-mode-badge.svg)](http://melpa.org/#/jade-mode)  [![MELPA Stable](http://stable.melpa.org/packages/jade-mode-badge.svg)](http://melpa.org/#/jade-mode)
 
 ## major mode for jade-mode and stylus-mode
 
@@ -67,9 +68,14 @@ Add the following lines to any of your initialization files
     (require 'jade-mode)
     (add-to-list 'auto-mode-alist '("\\.styl\\'" . sws-mode))
 
+### [Flycheck][] support.
+
+[Flycheck][] now has support for jade files. Currently only handles errors.
+
+
 ### Flymake support
 
-if you want to add flymake support for jade files:
+[Flycheck][] is the successor to Flymake, however if you want to add flymake support for jade files:
 
     (defun flymake-jade-init ()
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -85,3 +91,6 @@ if you want to add flymake support for jade files:
                 flymake-err-line-patterns))
     (add-to-list 'flymake-allowed-file-name-masks
              '("\\.jade\\'" flymake-jade-init))
+
+
+[Flycheck]: https://github.com/flycheck/flycheck

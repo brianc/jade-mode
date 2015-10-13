@@ -75,7 +75,7 @@ Add the following lines to any of your initialization files
 
 ### Flymake support
 
-[Flycheck][] is the successor to Flymake, however if you want to add flymake support for jade files:
+[Flycheck][] is the successor to Flymake and this is left for legacy purpose. If you want to add flymake support for jade files:
 
     (defun flymake-jade-init ()
       (let* ((temp-file (flymake-init-create-temp-buffer-copy

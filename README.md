@@ -70,7 +70,7 @@ Add the following lines to any of your initialization files
 
 ### [Flycheck][] support.
 
-[Flycheck][] now has support for jade files. Currently only handles errors.
+[Flycheck][] now has support for jade files. It currently only handles errors.
 
 
 [Flycheck]: https://github.com/flycheck/flycheck

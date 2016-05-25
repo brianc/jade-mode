@@ -393,6 +393,7 @@ region defined by BEG and END."
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.jade\\'" . jade-mode))
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.pug\\'" . jade-mode))
 
 (provide 'jade-mode)

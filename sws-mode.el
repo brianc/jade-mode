@@ -122,10 +122,9 @@
 (define-key sws-mode-map [backtab] 'sws-dendent-line)
 
 ;;;###autoload
-(define-derived-mode sws-mode fundamental-mode
+(define-derived-mode sws-mode text-mode
   "sws"
   "Major mode for editing significant whitespace files"
-  (kill-all-local-variables)
 
   ;; default tab width
   (setq sws-tab-width 2)
@@ -136,11 +135,7 @@
   (setq indent-region-function 'sws-indent-region)
 
   ;; TODO needed?
-  (setq indent-tabs-mode nil)
-
-  ;; keymap
-  (use-local-map sws-mode-map)
-  (setq major-mode 'sws-mode))
+  (setq indent-tabs-mode nil))
 
 (provide 'sws-mode)
 ;;; sws-mode.el ends here

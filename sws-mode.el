@@ -1,8 +1,18 @@
-;;; sws-mode.el --- (S)ignificant (W)hite(S)pace mode
-;;;
-;;; URL: https://github.com/brianc/jade-mode
-;;; Author: Brian M. Carlson and other contributors
-;;;
+;;; sws-mode.el --- (S)ignificant (W)hite(S)pace mode  -*- lexical-binding: t -*-
+
+;; Copyright 2011-2021  Brian Carlson
+
+;; Author: Brian M. Carlson and other contributors
+;; Version: 1.0.1
+;; Keywords: languages
+;; URL: https://github.com/brianc/jade-mode
+
+;;; Commentary:
+
+;; Common code for the jade-mode and stylus-mode.
+
+;;; Code:
+
 (require 'font-lock)
 
 (defvar sws-tab-width 2)

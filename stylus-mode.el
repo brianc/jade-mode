@@ -1,10 +1,19 @@
-;;; stylus-mode.el --- Major mode for editing .jade files
-;;;
-;;; URL: https://github.com/brianc/jade-mode
-;;; Author: Brian M. Carlson and other contributors
-;;; Package-Requires: ((sws-mode "0"))
-;;;
-;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
+;;; slylus-mode.el --- Major mode for editing .styl files  -*- lexical-binding: t -*-
+
+;; Copyright 2011-2021  Brian Carlson
+
+;; Author: Brian M. Carlson and other contributors
+;; Version: 1.0.1
+;; Keywords: languages
+;; URL: https://github.com/brianc/jade-mode
+
+;;; Commentary:
+
+;; Major mode for the Stylus templating language
+;; (https://stylus-lang.com/).
+
+;;; Code:
+
 (require 'font-lock)
 (require 'sws-mode)
 
@@ -24,6 +33,8 @@
 (defun stylus-blank-line-p ()
   "If line contains only spaces."
   (string-match-p "^[ ]*$" (stylus-line-as-string)))
+
+;;; copied from http://xahlee.org/emacs/elisp_syntax_coloring.html
 
 (defconst stylus-colours
   (eval-when-compile

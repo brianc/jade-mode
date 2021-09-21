@@ -1,4 +1,4 @@
-;;; slylus-mode.el --- Major mode for editing .styl files  -*- lexical-binding: t -*-
+;;; stylus-mode.el --- Major mode for editing .styl files  -*- lexical-binding: t -*-
 
 ;; Copyright 2011-2021  Brian Carlson
 

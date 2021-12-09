@@ -24,6 +24,7 @@ html(lang="en", class = ['classOne', 'classTwo'].join(','))
         div#single-quote.example
           = 'this single quote should highlight as a string'
           = 'this one' + "and this should too"
+          != 'unescaped example'
           span= 'another' + "quote example"
           span this one shouldn't higlight strings or... .other #things if else
           | this one shouldn't highlight strings, and the same goes for .keywords #ok ?
@@ -35,6 +36,7 @@ html(lang="en", class = ['classOne', 'classTwo'].join(','))
           - var helperFunction = function (a) { return (a === 1 ? 'singular' : 'plural'); };
           span= someArray.join(', ')
           span= a.toString() + helperFunction(a)
+          span!= a.toString() + helperFunction(a)
           span#id.class(style = 'margin-bottom: 0;')= "some_js_expression".split('_').join(' ')
       #footer
         #copywrite-text= locals
